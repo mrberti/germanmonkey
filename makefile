@@ -2,13 +2,13 @@ NAME = germanmonkey
 CFILES = main.c
 
 CC = gcc
-CFLAGS = -Wall
+CFLAGS = -Wall -g
 
-all:
+all: $(CFILES)
 	$(CC) $(CFLAGS) -o $(NAME) $(CFILES)
 
 run:
 	make && ./$(NAME)
 
 clean:
-	rm germanmonkey a.out
+	rm -f $(NAME) a.out

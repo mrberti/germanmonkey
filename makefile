@@ -9,3 +9,6 @@ all:
 
 run:
 	make && ./$(NAME)
+
+clean:
+	rm germanmonkey a.out

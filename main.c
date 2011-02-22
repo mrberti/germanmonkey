@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include <math.h>
 
 #define MAXPOOL		10000
 #define MAXWORDLENGTH	10000
@@ -35,7 +36,8 @@ float probs[] = {
 	0.0100  // Z
 };
 
-char charPool[MAXPOOL];
+//char charPool[MAXPOOL];
+char *charPool;
 
 int main(int argc, char** arg)
 {
@@ -50,31 +52,36 @@ int main(int argc, char** arg)
 		printf("<wordlength> must be between 1 and %d\n", MAXWORDLENGTH);
 		return 1;
 	}
-	
+
 	srand(time(NULL)); 
 	
 	printf("\nTrying to generate german words of length %d\n", wordlength);
 	printf("Filling char Pool...\n");
 
+	int probSize = sizeof(probs)/sizeof(float);
+	int poolSize = 0;
 	int c;
 	int i = 0, k = 0;
-	for(c = 0; c < 26; c++)
+
+	// Calculating size of Poolarray, since the sum of all probabilities
+	// maybe isn't 1!
+	for (c = 0; c < probSize; c++) {
+		poolSize += MAXPOOL*probs[c];
+	}
+	charPool = (char*)malloc(sizeof(char)*poolSize);
+
+	for(c = 0; c < probSize; c++)
 	{
-		//printf("%c, max = %d\n", c + 97, (int)(probs[c]*MAXPOOL));
-		for(i = 0; i < (int)(probs[(int)c]*MAXPOOL); i++)
+		int charReps = probs[c] * MAXPOOL;
+		//printf("%c, max = %d\n", c + 97, charReps);
+		for(i = 0; i < charReps; i++)
 		{
 			charPool[k] = c + 97;
 			k++;
 		}
 	}
 
-	printf("Filling rest with blanks (shitty trick...)\n");
-	for(i = 0; i < MAXPOOL; i++)
-	{
-		if(charPool[i] < 'a' || charPool[i] > 'z')
-			charPool[i] = '#';
-	}
-
+	/*
 	printf("Shuffling char Pool...\n");
 
 	for(i = 0; i < MAXSHUFFLE; i++)
@@ -86,11 +93,14 @@ int main(int argc, char** arg)
 		charPool[i2] = charPool[i1];
 		charPool[i1] = temp;
 	}
+	*/
 
+	/*
 	printf("Printing char Pool...\n");
 	for(i = 0; i < MAXPOOL; i++)
 		printf("%c", charPool[i]);
 	printf("\n");
+*/
 
 	printf("Creating random word...\n");
 	char word[wordlength+1];
@@ -122,10 +132,14 @@ int main(int argc, char** arg)
 		effProb[c] = (float)k / wordlength;
 		probDiff[c] = probs[c] - effProb[c];
 		relDiff[c] = probDiff[c] / probs[c];
-		printf("%c:  k = %d \t Prob = %f \t diff = %f \t relDiff = %.2f\%\n", c+97, occurance[c], effProb[c], probDiff[c], fabs(relDiff[c])*100);
+		printf("%c:  k = %d \t Prob = %f \t diff = %f \t relDiff = %.2f%%\n", 
+				c+97, occurance[c], effProb[c], probDiff[c], fabs(relDiff[c])*100);
 	}
 
 	printf("\n%s\n\n",word);
+
+
+	free(charPool);
 	return 0;
 }
 

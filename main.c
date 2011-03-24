@@ -4,7 +4,7 @@
 #include <math.h>
 
 #define MAXPOOL		10000
-#define MAXWORDLENGTH	100000
+#define MAXWORDLENGTH	10000
 #define MAXSHUFFLE	MAXPOOL*1000
 
 float probs[] = { 

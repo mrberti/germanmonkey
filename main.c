@@ -7,6 +7,7 @@
 #define MAXWORDLENGTH	10000
 #define MAXSHUFFLE	MAXPOOL*1000
 
+
 float probs[] = { 
 	0.0651, // A
 	0.0257, // B
